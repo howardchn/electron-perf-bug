@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button>Click me!</button>
+    <p></p>
+    <script>
+    document.querySelector('button').onclick = (async e => {
+        const fs = require('fs');
+        const StreamReader = require('ginkgoch-stream-reader');
+        const rs = fs.createReadStream('./demo.jpg');
+
+        const sr = new StreamReader(rs);
+        await sr.open();
+        let begin = new Date;
+        let buffer = await sr.read(8);
+        let times = 1;
+        while(buffer !== null) {
+            buffer = await sr.read(8);
+            times++;
+        }
+        let end = new Date;
+        document.querySelector('p').innerHTML = end - begin;
+    });
+    </script>
+</body>
+</html>
