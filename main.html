@@ -7,10 +7,38 @@
     <title>Document</title>
 </head>
 <body>
-    <button>Click me!</button>
+    <button class='btn1'>Click fast!</button>
+    <button class='btn2'>Click slow!</button>
     <p></p>
     <script>
-    document.querySelector('button').onclick = (async e => {
+    document.querySelector('.btn1').onclick = (async e => {
+        const fs = require('fs');
+        const rs = fs.createReadStream('./demo.jpg');
+
+        async function load(rs) {
+            return await new Promise(r => {
+                rs.on('readable', () => {
+                    let times = 1, buffer = null;
+                    while(null !== (buffer = rs.read(8))) {
+                        times++;
+                    }
+                }).on('end', () => {
+                    r();
+                });
+            });
+        }
+
+        async function execute() {
+            let begin = new Date;
+            await load(rs);
+            let end = new Date;
+            document.querySelector('p').innerHTML = end - begin;
+        }
+
+        execute();
+    });
+
+    document.querySelector('.btn2').onclick = (async e => {
         const fs = require('fs');
         const StreamReader = require('ginkgoch-stream-reader');
         const rs = fs.createReadStream('./demo.jpg');
@@ -27,6 +55,7 @@
         let end = new Date;
         document.querySelector('p').innerHTML = end - begin;
     });
+
     </script>
 </body>
 </html>
